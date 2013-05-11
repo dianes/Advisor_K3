@@ -8,6 +8,8 @@ body
 #geoLocationContainer,
 #helloWorldInput,
 #helloWorldText
+#contactSearchCriteria,
+#btnSearch
 {
     text-align: center;
 }
@@ -24,3 +26,166 @@ body
     color: black;
     padding: 7px;
 }
+
+.sectionTitle
+{
+    font-size: 18px;
+    font-weight: bold;
+    color: #CCCCCC
+}
+
+.listviewGroupTitle
+{
+    font: bold 18px;
+    color: #B2B2B2;
+    
+}
+
+.gridGroupTitle
+{
+    font-size: 16px;
+    font-weight: bold
+}
+
+.gridHeader
+{
+    font:bold 14px;
+    color: #7B7B7B;
+    text-align:left
+}
+
+.gridGroupFooter
+{
+    
+}
+
+.gridFooter
+{
+    
+}
+
+#txtLname
+{
+    width: 300px;
+    font-size: 18px;
+    margin-top:15px;
+    margin-bottom:20px
+    
+}
+.gridData
+{
+    font-size: 18px
+}
+
+.details-link
+{
+    margin-top: -lem;
+    position: absolute;
+    right: 0.6em;
+    top: 20%;
+    width: 1em;
+}
+
+.contact-type
+{    
+    font-size: .85em;
+    font-style: italic;
+    line-height: 1em;
+    margin: 0 0 0.5em .95em;
+    width: 45%;
+    color: brown
+}
+
+.address
+{
+    margin-top: -lem;
+    position: absolute;
+    right: 2em;
+    top: 30%;    
+    font-weight: normal;
+    font-style: oblique
+}
+
+.contact-name
+{
+    font-size: 40px;
+    margin-top: 0.5em;
+}
+
+#hhProfileListGrid .contact-phone
+{
+    margin-left: 5em;        
+  /*  color: #0064B5; */
+    color: #4F3064;
+    font-weight: normal
+}
+
+#hhProfileListGrid .contact-type
+{
+    font-size: .5em;
+    font-style: italic;
+    line-height: 1em;
+    /*margin: -1em 0 0 12em;*/
+    width: 45%;
+    color: brown;
+    vertical-align: middle;
+}
+
+#hhAccountInfo .k-grid-header
+{
+    background-color: red
+}
+
+.k-reset
+{
+    color: #457E81;
+    font-weight: bold
+}
+
+#acctInfoRight
+{
+    margin-top: -lem;
+    position: absolute;
+    right: 2em;
+    top: 40%;
+}
+
+/*.k-input .k-autocomplete .k-header .k-state-default
+{
+    -webkit-border-radius:0;
+    border-radius: 0;
+    border-width:0;
+    padding:0
+}*/
+
+#assetsTable assetname .k-header 
+{
+    text-align:left;
+}
+
+#assetsTable assetpct .k-header 
+{
+    text-align:right;
+}
+
+/*.k-widget
+{
+    background-color: red
+}*/
+
+.k-grid th.k-header,
+.k-grid-header
+{
+    background-color: purple
+}
+
+
+
+
+
+
+
+
+
+
+ 

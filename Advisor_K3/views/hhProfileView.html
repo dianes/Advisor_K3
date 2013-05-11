@@ -1,0 +1,75 @@
+<div data-role="view" id="hhProfileView" data-title="Household Profile" data-align="left" data-show="getHHProfile" >
+	<header data-role="header">
+		<div data-role="navbar">
+            <a data-role="backbutton" data-align="left">Back</a>
+            <span data-role="view-title"></span>
+		</div>
+	</header>
+    
+    <div id="HouseholdProfileViewContent" data-role="content">
+        <!--<div id="grid"></div>-->
+        
+        <div>
+            <ul data-role="listview" data-style="inset" data-type="group">
+                <li>
+                    Demographic Information
+                    <ul data-role="listview" data-style="inset">
+                        <li>
+                            <div id="hhProfileListGrid"></div>
+                        </li>
+                    </ul>
+                </li>
+         
+                <li>
+                    Accounts Information
+                    <ul data-role="listview" data-style="inset">  
+                        <!--<li>
+                            <h3>Internal Accounts</h3>
+                            <div id="hhProfileIntAcctGrid"></div>                      
+                        </li>
+                        <li>
+                             <h3>External Accounts</h3>                             
+                             <div id="hhProfileExtAcctGrid"></div>
+                        </li>-->
+                        <li>
+                               <div id="hhAccountInfo"></div>
+                        </li>
+                    </ul>
+                    
+                 </li>
+            </ul>
+        </div>
+	</div>
+</div>
+
+<script id="contactDetailTemplate" type="text/x-kendo-template">
+    <table id="hhProfileListTbl">
+        <tr>
+            <td width="15%" valign="top"><b>Name:</b></td>
+            <td width="25%" valign="top">#=fname# #=lname#</td>
+            <td width="10%" valign="top"></td>
+            <td width="15%" valign="top"><b>Address:</b></td>
+            <td width="30%" valign="top">#=addressLine1#,<br/> #=addressLine2#,<br/>#=city#,#=state# #=zip#</td>
+        </tr>
+        <tr>
+            <td valign="top"><b>Client Type</b></td>
+            #if(type==1){#
+                <td valign="top">Client</td>
+            #}else{#
+                <td valign="top">Prospect</td>
+            #}#
+            <td valign="top"></td>
+            <td valign="top">Addl. Contacts</td>
+            <td valign="top"></td>
+        </tr>
+        <tr>
+            <td valign="top"><b>Home Phone:</b></td>
+            <td valign="top">#:homePhone#</td>
+            <td valign="top"></td>
+            <td valign="top"><b>Mobile Phone:</b></td>
+            <td valign="top">#=phone#</td>
+        </tr>
+    </table>
+    
+</script>
+
