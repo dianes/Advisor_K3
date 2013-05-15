@@ -75,6 +75,12 @@
     </Content>
     <Content Include="images\address_16.png" />
     <Content Include="images\address_24.png" />
+    <Content Include="images\close.png" />
+    <Content Include="images\coloricons-sprite.png" />
+    <Content Include="images\file.png" />
+    <Content Include="images\folder.png" />
+    <Content Include="images\folder_h.png" />
+    <Content Include="images\folder_v.png" />
     <Content Include="index.html" />
     <Content Include="kendo\js\jquery.min.js" />
     <Content Include="kendo\js\kendo.mobile.min.js" />
@@ -96,7 +102,9 @@
     <Content Include="styles\sampletheme.css" />
     <Content Include="views\accountDetail.html" />
     <Content Include="views\contactSearchView.html" />
+    <Content Include="views\fileView.html" />
     <Content Include="views\hhProfileView.html" />
+    <Content Include="views\mapView.html" />
     <Content Include="views\modelSearchView.html" />
     <Content Include="views\recentContactsView.html" />
     <Content Include="views\recentModelsView.html" />

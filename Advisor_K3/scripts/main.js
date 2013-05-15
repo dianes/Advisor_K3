@@ -6,6 +6,18 @@ var modId = 120;
 var args = [];
 var data = [];
 
+/* file system*/
+var root = null;
+var currentDir = null;
+var parentDir = null;
+var activeItem = null;
+var activeItemType = null;
+
+
+window.addEventListener('load', function(){
+    document.addEventListener('deviceready', onDeviceReady, false);}, false);
+
+
 function ajaxCall(url, param, onSuccess, data, args){
     $.ajax({
         type: "POST",
@@ -810,5 +822,324 @@ function bindHoldingsInfo(data)
                     ],
                 });
 }
+
+/*
+function showMap() { 
+    navigator.geolocation.getCurrentPosition(
+    onSuccessShowMap,
+    onErrorShowMap
+    );
+ 
+}
+
+function onSuccessShowMap(position) { 
+    var latlng = new google.maps.LatLng(
+    position.coords.latitude,
+    position.coords.longitude);
+     
+    var mapOptions = {
+     
+    sensor: true,
+    center: latlng,
+    panControl: false,
+    zoomControl: true,
+    zoom: 16,
+    mapTypeId: google.maps.MapTypeId.ROADMAP,
+    streetViewControl: false,
+    mapTypeControl: true,
+     
+    };
+     
+    var map = new google.maps.Map(
+    document.getElementById('map_canvas'),
+    mapOptions
+    );
+     
+    var marker = new google.maps.Marker({
+    position: latlng,
+    map: map
+    });
+    console.log(marker);
+    console.log("map rendering");
+}
+
+function onErrorShowMap(error) { 
+    alert("error");
+}
+*/
+function onDeviceReady(){
+    debugger;
+ //   alert("onDeviceReady");
+    clickItemAction();
+  
+}
+
+
+function getFileSystem(){
+    debugger;
+   // alert("getfilesystem");
+  //  $('#backBtn').hide();
+  // clickItemAction();
+   
+  window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, onGetFileSystemSuccess, onGetFileSystemFail); 
+}
+
+function onGetFileSystemSuccess(fileSystem){
+            root = fileSystem.root;
+            listDir(root);
+}
+
+function onGetFileSystemFail(evt){
+          //  console.log(evt.target.error.code);
+}    
+
+function listDir(directoryEntry){
+    debugger;
+    alert("listdir of " + directoryEntry.name);
+    if(!directoryEntry.isDirectory)
+        console.log("listdir incorrect type");
+    
+    currentDir = directoryEntry;
+    alert("currentdir="+ currentDir.name);
+    directoryEntry.getParent(function(par){
+        parentDir = par;
+        alert("parentDir.name="+parentDir.name);
+        if((parentDir.name == 'sdcard' && currentDir.name != 'sdcard' ) || parentDir.name != 'sdcard')
+            $('#backBtn').show();
+        }, 
+        function(error){
+            console.log('Get parent error: '+error.code);
+        
+    });
+    
+    var directoryReader = directoryEntry.createReader();
+    directoryReader.readEntries(function(entries){
+        var dirContent = $('#dirContent');
+        dirContent.empty();
+        
+        var dirArr = new Array();
+        var fileArr = new Array();
+       // alert("length="+ entries.length);
+        for(var i=0; i<entries.length; i++){
+            
+            var entry = entries[i];
+        //    alert("entry="+ entries[i].name + "isDirectory="+ entries[i].isDirectory);
+        //  alert("entry.name="+ entry.name);
+        //    alert(" entry.isDirectory=" + entry.isDirectory);
+            if(entry.isDirectory && entry.name[0]!='.') {
+                dirArr.push(entry);
+            }
+            else if(entry.isFile && entry.name[0]!='.') {
+                fileArr.push(entry);
+            }
+         }  
+        
+        var output="";
+        var sortedArr = dirArr.concat(fileArr);
+        var uiBlock = ['a','b','c','d'];
+        
+        for(var i=0;i<sortedArr.length;i++){
+            var item = sortedArr[i];
+            var letter = uiBlock[i%4];
+            if(item.isDirectory)
+                dirContent.append('<div class="ui-block-'+letter+'"><div class="folder"><p>'+item.name + '</p></div></div>');
+                //dirContent.append('<div class="ui-block-'+letter+'"><a class="delete-link" href="\#"></a><div class="folder"><p>'+item.name + '</p></div></div>');
+            else
+               dirContent.append('<div class="ui-block-'+letter+'"><div class="file"><p>'+item.name + '</p></div></div>');
+               //dirContent.append('<div class="ui-block-'+letter+'"><a class="delete-link" href="\#" name="hello"></a><div class="file"><p>'+item.name + '</p></div></div>');
+            }
+        
+        
+     //   alert("dirContent="+dirContent);
+        
+        
+       /* for(var j=0;j<sortedArr.length; j++){
+            if(sortedArr[j].isDirectory && entry.name[0]!='.'){
+                output+="<div class='k-sprite folder'>" + sortedArr[j].name + "</div>";               
+                alert("directory output: " + output);
+             }
+            else if(sortedArr[j].isFile && entry.name[0]!='.'){
+                output+="<div class='k-sprite'>" + sortedArr[j].name + "</div>";               
+                alert("file output: " + output);
+            }
+        }*/
+        
+      //  $("#fileContent").append(output);
+        
+        
+        
+        /*var output = "<ul id='treeView'>";        
+        
+        for(var j=0;j<dirArr.length; j++){
+        alert("dirArr="+ dirArr[j].name);
+            output += "<li data-expanded='true'><span class='k-sprite folder'></span>" + dirArr[j].name + "<ul>";
+            listDir(dirArr[j]);
+            output += "</ul>";
+        }
+   
+        for(var k=0;k<fileArr.length;k++){            
+            output += "<li><span class='k-sprite'></span>" + fileArr[k].name + "</li>";
+        }
+        
+        alert("output="+ output);*/
+        
+        
+     });
+    
+    }
+    
+function clickItemAction(){
+    
+// alert("clickItemAction");
+    
+    var folders = $('.folder');
+    var files = $('.file');
+    var backBtn = $('#backBtn');
+    var deletelnk = $('.delete-link');
+   // var homeBtn = $('#homeBtn');
+  //  var menuDialog = $('#menuOptions');
+  //  var openBtn = $('openBtn');
+    
+    folders.live('click', function(){
+        alert("folder clicked");
+        var name = $(this).text();
+        getActiveItem(name,'d');
+     //   $('#menu').trigger('click');
+        alert("activeItemType="+activeItemType);
+        openItem(activeItemType);
+    });
+    
+/*    $('.folder').click(function(){
+        alert("folder clicked");
+        var name = $(this).text();
+        getActiveItem(name,'d');
+        openItem(activeItemType);
+    });*/
+    
+    files.live('click', function(){
+        alert("file clicked");
+        var name = $(this).text();
+        getActiveItem(name, 'f');
+        openItem(activeItemType);
+    });
+    
+    backBtn.live('click', function(){
+        $('#dirContent').empty();
+        alert("backBtn clicked");
+        alert("backBtn clicked: parentDir="+ parentDir);
+        if(parentDir != null){            
+            listDir(parentDir);
+        }            
+    });
+    
+    deletelnk.live('click', function(){
+        alert("hello");
+        var nameval= $(this).getAttribute("name");
+        alert("nameval=");
+       // alert("activeItem.name="+activeItem.name);
+        alert("deletelnk clicked");
+       // alert("activeItem.name="+activeItem.name);
+        var removeconfirm = confirm("Are you sure you want to remove directory "+ activeItem.name + " recursively?");
+        alert("removeconfirm = "+ removeconfirm);
+       /* if(activeItem != null && activeItemType != null && removeconfirm == true){
+            if(activeItemType == 'd'){               
+                activeItemType.removeRecursively(function(){
+                    console.log("removed recursively with success");
+                    listDir(currentDir);
+                },
+                function(error){
+                    console.log("remove recursively with error: "+ error.code);
+                });
+              }else if(activeItemType == 'f'){
+                  activeItem.remove(function(){
+                      console.log("removed file with success");
+                      listDir(currentDir);
+                  },
+                  function(error){
+                      console.log("removed file error: " + error.code);
+                  });
+              }
+        }
+        else{
+            listDir(currentDir);
+        }*/
+    });
+}
+    
+    
+function getActiveItem(name, type){
+  //  alert("getactiveItem, name=" + name + " type=" +type);
+    debugger;
+    if(type=='d' && currentDir != null){
+        currentDir.getDirectory(name, {create:false},
+            function(dir){
+                activeItem = dir;
+                activeItemType = type;                    
+            },
+            function(error){
+                console.log("unable to find directory: " + error.code);
+            });
+    }else if(type=='f' && currentDir != null){
+        currentDir.getFile(name, {create:false},
+            function(file){
+                activeItem = file;
+                activeItemType = type;
+            },
+            function(error){
+                console.log("unable to find file: " + error.code);
+            });
+    }
+}
+
+function openItem(type){
+   // alert("openItem, type="+ type);
+    if(type=='d')
+        listDir(activeItem);
+    else if(type == 'f'){
+        readFile(activeItem);
+    }
+}
+
+function readFile(fileEntry){
+    if(!fileEntry.isFile) 
+        console.log("readFile incorrect type");
+    fileEntry.file(function(file){
+        var reader = new FileReader();
+        reader.onloadend = function(evt){
+            console.log("read as data url");
+            console.log("evt.target.result");
+            };
+        reader.readAsDataURL(file);
+        
+        var fileDiv = document.getElementById("fileField");
+        
+        if (device.platform === 'Android') {
+		    var path = this.getWorkingFolder().replace('http://', 'file://') + fileEntry.name;
+		    fileDiv.innerText = path;
+		    window.plugins.childBrowser.openExternal(path);
+         }
+         else{
+            var url = window.location.href.replace('index.html', fileEntry.name);
+           
+    		fileDiv.innerText = url;
+    		window.plugins.childBrowser.showWebPage(url);
+         }
+        
+    });
+    
+}
+
+        
+function getWorkingFolder() {
+	var path = window.location.href.replace('index.html', '');
+	return path;
+}  
+
+
+
+
+
+
+
 
      

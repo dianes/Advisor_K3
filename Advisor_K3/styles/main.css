@@ -180,6 +180,61 @@ body
 }
 
 
+/* start for treeview */
+.demo-section 
+{
+    width: 200px;
+}
+
+#treeview .k-sprite {
+    background-image: url("../images/coloricons-sprite.png");
+}
+
+.rootfolder { background-position: 0 0; }
+.folder { background-position: 0 -16px; }
+.pdf { background-position: 0 -32px; }
+.html { background-position: 0 -48px; }
+.image { background-position: 0 -64px; }
+
+/* end for treeview */
+
+/* start for jquery grid folder/file */
+.folder, .file{
+    font-family:sans;
+    font-size:10px;
+    cursor:pointer;
+}
+
+.folder{
+	background: url('../images/folder.png') no-repeat 50% 0%;
+	margin:2px;
+	padding-top:40px;
+	text-align:center;
+}
+
+
+.file{
+	background: url('../images/file.png') no-repeat 50% 0%;
+	margin:2px;
+	padding-top:30px;
+	text-align:center;
+}
+/*end for jquery grid folder/file */
+
+.delete-link {
+    width: 12px;
+    height: 12px;
+    background: transparent url("../images/close.png") no-repeat 50% 50%;
+    overflow: hidden;
+    display: inline-block;
+    font-size: 0;
+    line-height: 0;
+    vertical-align:top;
+    margin: 20px 0 0 40px;
+    -webkit-border-radius: 5px;
+    -mox-border-radius: 5px;
+    border-radius: 5px;
+}
 
 
 
@@ -188,4 +243,5 @@ body
 
 
 
- 
+
+
