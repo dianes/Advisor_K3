@@ -12,6 +12,9 @@ var currentDir = null;
 var parentDir = null;
 var activeItem = null;
 var activeItemType = null;
+var clipboardItem = null;
+var clipboardItemAction = null;
+var fileText = null;
 
 
 window.addEventListener('load', function(){
@@ -725,7 +728,8 @@ function assetsTable(list)
     
     $("#assetsTable").kendoGrid({
                         dataSource: dataArray,
-                        rowTemplate: kendo.template($("#assetsTemplate").html()),        
+                        rowTemplate: kendo.template($("#assetsTemplate").html()),      
+                    
                        columns: [
                       { field: "color",
                         title: " ",
@@ -751,7 +755,9 @@ function assetsTable(list)
                              style: "text-align:right"
                          }
                      }
-                 ]
+                 ],
+        
+                editable:true,
                         
                     });
     
@@ -871,15 +877,24 @@ function onDeviceReady(){
     debugger;
  //   alert("onDeviceReady");
     clickItemAction();
+    
   
 }
 
 
 function getFileSystem(){
-    debugger;
-   // alert("getfilesystem");
-  //  $('#backBtn').hide();
-  // clickItemAction();
+    
+   // alert("getfilesystem");    
+    $('#backBtn').hide();
+    
+    $('#addFolderDialog').show();
+    
+  //  openMenuOptions();
+          
+  
+    $('#menuOptions').hide();
+    $('#addFolderDialog').hide();
+  
    
   window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, onGetFileSystemSuccess, onGetFileSystemFail); 
 }
@@ -893,17 +908,16 @@ function onGetFileSystemFail(evt){
           //  console.log(evt.target.error.code);
 }    
 
-function listDir(directoryEntry){
-    debugger;
-    alert("listdir of " + directoryEntry.name);
+function listDir(directoryEntry){    
+ //   alert("listdir of " + directoryEntry.name);
     if(!directoryEntry.isDirectory)
         console.log("listdir incorrect type");
     
     currentDir = directoryEntry;
-    alert("currentdir="+ currentDir.name);
+ //   alert("currentdir="+ currentDir.name);
     directoryEntry.getParent(function(par){
         parentDir = par;
-        alert("parentDir.name="+parentDir.name);
+  //      alert("parentDir.name="+parentDir.name);
         if((parentDir.name == 'sdcard' && currentDir.name != 'sdcard' ) || parentDir.name != 'sdcard')
             $('#backBtn').show();
         }, 
@@ -998,15 +1012,22 @@ function clickItemAction(){
     var deletelnk = $('.delete-link');
    // var homeBtn = $('#homeBtn');
   //  var menuDialog = $('#menuOptions');
-  //  var openBtn = $('openBtn');
+    /*var openBtn = $('openBtn');
+    var copyBtn = $('#copyBtn');
+	var moveBtn = $('#moveBtn');*/
+	var pasteBtn = $('#pasteBtn');
     
     folders.live('click', function(){
-        alert("folder clicked");
+       // alert("folder clicked");
         var name = $(this).text();
+      //  openMenuOptions();
+        $('#menuOptions').show();
+       
+        
         getActiveItem(name,'d');
-     //   $('#menu').trigger('click');
-        alert("activeItemType="+activeItemType);
-        openItem(activeItemType);
+      //  $('#menu').trigger('click');
+     //   alert("activeItemType="+activeItemType);
+     //   openItem(activeItemType);
     });
     
 /*    $('.folder').click(function(){
@@ -1017,59 +1038,46 @@ function clickItemAction(){
     });*/
     
     files.live('click', function(){
-        alert("file clicked");
+     //   alert("file clicked");
         var name = $(this).text();
+       //$('#dirContent').hide();
+        $('#menuOptions').show();
+       
         getActiveItem(name, 'f');
-        openItem(activeItemType);
+      //  openItem(activeItemType);
     });
     
     backBtn.live('click', function(){
         $('#dirContent').empty();
-        alert("backBtn clicked");
-        alert("backBtn clicked: parentDir="+ parentDir);
+      //  alert("backBtn clicked");
+      //  alert("backBtn clicked: parentDir="+ parentDir);
         if(parentDir != null){            
             listDir(parentDir);
-        }            
+        } 
+        $('#menuOptions').hide();
+        $('#addFolderDialog').hide();
     });
+    
+   /* openBtn.live('click', function(){
+        alert("openBtn clicked");
+		openItem(activeItemType);		
+	});*/
     
     deletelnk.live('click', function(){
         alert("hello");
-        var nameval= $(this).getAttribute("name");
+      //  var nameval= $(this).getAttribute("name");
         alert("nameval=");
        // alert("activeItem.name="+activeItem.name);
         alert("deletelnk clicked");
        // alert("activeItem.name="+activeItem.name);
         var removeconfirm = confirm("Are you sure you want to remove directory "+ activeItem.name + " recursively?");
-        alert("removeconfirm = "+ removeconfirm);
-       /* if(activeItem != null && activeItemType != null && removeconfirm == true){
-            if(activeItemType == 'd'){               
-                activeItemType.removeRecursively(function(){
-                    console.log("removed recursively with success");
-                    listDir(currentDir);
-                },
-                function(error){
-                    console.log("remove recursively with error: "+ error.code);
-                });
-              }else if(activeItemType == 'f'){
-                  activeItem.remove(function(){
-                      console.log("removed file with success");
-                      listDir(currentDir);
-                  },
-                  function(error){
-                      console.log("removed file error: " + error.code);
-                  });
-              }
-        }
-        else{
-            listDir(currentDir);
-        }*/
+       // alert("removeconfirm = "+ removeconfirm);       
     });
 }
     
     
 function getActiveItem(name, type){
-  //  alert("getactiveItem, name=" + name + " type=" +type);
-    debugger;
+  //  alert("getactiveItem, name=" + name + " type=" +type);   
     if(type=='d' && currentDir != null){
         currentDir.getDirectory(name, {create:false},
             function(dir){
@@ -1092,7 +1100,7 @@ function getActiveItem(name, type){
 }
 
 function openItem(type){
-   // alert("openItem, type="+ type);
+    //alert("openItem, type="+ type);
     if(type=='d')
         listDir(activeItem);
     else if(type == 'f'){
@@ -1101,28 +1109,52 @@ function openItem(type){
 }
 
 function readFile(fileEntry){
-    if(!fileEntry.isFile) 
+   // alert("readFile");
+    if(!fileEntry.isFile) {
         console.log("readFile incorrect type");
+        //alert("readfile incorrect type");
+     }
     fileEntry.file(function(file){
+       // alert("fileEntry.file before getting filereader");
         var reader = new FileReader();
+        
         reader.onloadend = function(evt){
+          //  alert("reader.onloaded");
             console.log("read as data url");
             console.log("evt.target.result");
             };
+        
         reader.readAsDataURL(file);
         
-        var fileDiv = document.getElementById("fileField");
+        
+        //var fileDiv = document.getElementById("fileField");
         
         if (device.platform === 'Android') {
+           // alert("readFile, android, fileEntry.name="+ fileEntry.name);
 		    var path = this.getWorkingFolder().replace('http://', 'file://') + fileEntry.name;
-		    fileDiv.innerText = path;
+		  //  fileDiv.innerText = path;
 		    window.plugins.childBrowser.openExternal(path);
          }
          else{
-            var url = window.location.href.replace('index.html', fileEntry.name);
+           //  alert("readFile, non-android, fileEntry.name="+ fileEntry.name);
+           //  alert("window.location.href="+window.location.href);
+          //   alert("fileEntry.fullPath="+ fileEntry.fullPath);
+           // var url = window.location.href.replace('index.html', fileEntry.name);
+          //  var url = window.location.href.replace("\index.html#views/fileView.html", fileEntry.name);
            
-    		fileDiv.innerText = url;
-    		window.plugins.childBrowser.showWebPage(url);
+            var url="file://" + fileEntry.fullPath;
+             
+           /*google viewer*/
+             
+    		//fileDiv.innerText = url;
+          //   alert("url="+url);
+                        
+            /*with childbroswer*/
+    		//window.plugins.childBrowser.showWebPage(url);
+             
+                       
+             /*inAppbrowser*/
+             var ref = window.open(encodeURI(url), '_blank', 'location=yes');
          }
         
     });
@@ -1135,8 +1167,205 @@ function getWorkingFolder() {
 	return path;
 }  
 
+function openBtnClicked(){
+   // alert("openBtn clicked");
+    
+ //   alert("activeItem.name="+ activeItem.name);
+  //  alert("activeItemType="+activeItemType);
+    
+    openItem(activeItemType);
+    $('#menuOptions').hide();
+}
+
+function deleteBtnClicked(){
+  //  alert("activeItemType="+activeItemType);
+    var removeconfirm = confirm("Are you sure you want to remove "+ activeItem.name + "?");
+     //   alert("removeconfirm = "+ removeconfirm);
+        if(activeItem != null && activeItemType != null && removeconfirm == true){
+            if(activeItemType == 'd'){               
+                activeItem.removeRecursively(function(){
+                    console.log("removed recursively with success");
+                    listDir(currentDir);
+                },
+                function(error){
+                    console.log("remove recursively with error: "+ error.code);
+                });
+              }else if(activeItemType == 'f'){
+                  activeItem.remove(function(){
+                      console.log("removed file with success");
+                      listDir(currentDir);
+                  },
+                  function(error){
+                      console.log("removed file error: " + error.code);
+                  });
+              }
+        }
+        else{
+            listDir(currentDir);            
+        }
+    $('#menuOptions').hide();
+}
+
+function copyBtnCLicked(){
+        getClipboardItem('c');
+		$('#menuOptions').hide();
+		$('#pasteBtn').removeAttr('disabled');
+		//$('#pasteBtn').button('refresh');
+}
+
+function moveBtnCLicked(){
+        getClipboardItem('m');
+		$('#menuOptions').hide();
+		$('#pasteBtn').removeAttr('disabled');
+		//$('#pasteBtn').button('refresh');
+    
+}
+
+function pasteBtnCLicked(){
+  //  alert("pasteBtnclicked");
+  //  alert("clipboardItem="+ clipboardItem + ", clipboardAction=" +clipboardAction );
+    
+    if( clipboardItem != null && clipboardAction != null ){
+			if(clipboardAction == 'c'){ // copy item
+				console.log('copy: '+clipboardItem.name + ' to: '+activeItem.name);
+				clipboardItem.copyTo(activeItem,clipboardItem.name,
+					function(fileCopy){
+						console.log('copy success! '+fileCopy.name);
+						//openBtn.trigger('click');
+                        $('#pasteBtn').attr('disabled','disabled');
+                        openBtnClicked();
+					}, function(error){
+						console.log('copy error: '+error.code);
+					}
+				);
+			} else if(clipboardAction == 'm'){ // move item
+				console.log('move: '+clipboardItem.name + ' to: '+activeItem.name);
+				clipboardItem.moveTo(activeItem,clipboardItem.name,
+					function(fileCopy){
+						console.log('move success! '+fileCopy.name);
+						//openBtn.trigger('click');
+                        $('#pasteBtn').attr('disabled','disabled');
+                        openBtnClicked();
+					}, function(error){
+						console.log('move error: '+error.code);
+					}
+				);
+			}
+		}
+}
+
+function getClipboardItem(action){
+	if( activeItem != null) {
+		clipboardItem = activeItem;
+		clipboardAction = action;
+	}
+}
+
+function addBtnClicked(){   
+ //   alert("addBtnClicked");
+    
+    $('#addFolderDialog').show();
+    $('#menuOptions').hide();
+    $('#createFolder').click(function(){
+        var filename = $('#newFolderName').val();
+        var isDir = document.getElementById("radio_d").checked;
+      //  alert("dirname="+filename);
+     // alert("isDir="+isDir);
+        
+        if(isDir){
+            createDirectory(filename);  
+            }
+        else{
+            fileText = $('#filetext').val();
+          //  alert("filetext="+fileText);
+            createFile(filename);
+        }
+            
+        
+    });
+ }
+   
+
+function createDirectory(name){
+  //  alert("createDirectory");  
+    $('#newFolderName').empty();
+    $('#addFolderDialog').hide();
+    $('#filetext').hide();   
+  
+    currentDir.getDirectory(name, {create: true, exclusive: false}, createDirectirtSuccess, createDirectoryFail);
+    
+}
+
+function createDirectirtSuccess(parent) {
+  //  alert("createDirectorySuccess, parent.name="+parent.name);
+    console.log("Parent Name: " + parent.name);
+    listDir(currentDir);
+}
+
+function createDirectoryFail(error) {    
+    alert("Unable to create new directory: " + error.code);
+}
+
+function createFile(name){
+  //  alert("createfile");
+    $('#newFolderName').empty();
+    $('#addFolderDialog').hide();
+    $('#filetext').hide();
+    currentDir.getFile(name, {create: true, exclusive: false}, createFileSuccess, createFilefail);
+}
+
+function createFileSuccess(parent){
+  //  alert("file created");
+    console.log("Parent Name: " + parent.name);
+    parent.createWriter(gotFileWriter, writeFilefail);
+    listDir(currentDir);
+}
+
+function createFilefail(error){
+    alert("Failed to retrieve file: " + error.code);
+}
+
+function showTextarea(){
+    $('#filetext').show();    
+}
+
+function gotFileWriter(writer) {
+   // alert("gotfileWriter");
+    
+       /* writer.onwriteend = function(evt) {
+            console.log("contents of file now 'some sample text'");
+            writer.truncate(11);  
+            writer.onwriteend = function(evt) {
+                console.log("contents of file now 'some sample'");
+                writer.seek(4);
+                writer.write(" different text");
+                writer.onwriteend = function(evt){
+                    console.log("contents of file now 'some different text'");
+                }
+            };
+        };*/
+        writer.write(fileText);
+    }
 
 
+function writeFilefail(error) {
+    
+    alert("writefilefail:" + error.code);
+        console.log(error.code);
+    }
+
+
+function openMenuOptions(){    
+    debugger;
+    alert("openMenuOptions");
+    var win = $('#menuOptions').data("kendoMobileModalView");
+    alert("win="+win);
+    win.open();
+}
+
+function closeMenuOptions(){
+    $('#menuOptions').data("kendoMobileModalView").close();
+}
 
 
 

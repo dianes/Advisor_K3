@@ -37,8 +37,11 @@
     <Folder Include="kendo\js" />
     <Folder Include="kendo\styles" />
     <Folder Include="kendo\styles\images" />
+    <Folder Include="testdeletefolder" />
     <Folder Include="scripts" />
     <Folder Include="styles" />
+    <Folder Include="testdeletefolder\NewFolder" />
+    <Folder Include="testdeletefolder\testdelefolder2" />
     <Folder Include="views" />
   </ItemGroup>
   <ItemGroup>
@@ -88,6 +91,7 @@
     <Content Include="kendo\styles\images\KendoUI.ttf" />
     <Content Include="kendo\styles\images\KendoUI.woff" />
     <Content Include="kendo\styles\kendo.mobile.all.min.css" />
+    <Content Include="proposedorder.xml" />
     <Content Include="scripts\data.js" />
     <Content Include="scripts\hello-world.js" />
     <Content Include="scripts\jquery.mobile-1.2.0.min.js" />
@@ -100,11 +104,12 @@
     <Content Include="styles\main.css" />
     <Content Include="styles\orange.css" />
     <Content Include="styles\sampletheme.css" />
-    <Content Include="views\accountDetail.html" />
+    <Content Include="test.txt" />
+    <Content Include="testdelete.html" />
+    <Content Include="testdeletefolder\testdelefolder2\testdeletefile.html" />
+    <Content Include="testExcel.xlsx" />
     <Content Include="views\contactSearchView.html" />
     <Content Include="views\fileView.html" />
-    <Content Include="views\hhProfileView.html" />
-    <Content Include="views\mapView.html" />
     <Content Include="views\modelSearchView.html" />
     <Content Include="views\recentContactsView.html" />
     <Content Include="views\recentModelsView.html" />

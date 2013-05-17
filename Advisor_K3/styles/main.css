@@ -201,7 +201,7 @@ body
 /* start for jquery grid folder/file */
 .folder, .file{
     font-family:sans;
-    font-size:10px;
+    font-size:14px;
     cursor:pointer;
 }
 
@@ -214,9 +214,9 @@ body
 
 
 .file{
-	background: url('../images/file.png') no-repeat 50% 0%;
+	background: url('../images/file.png') no-repeat 50% 30%;
 	margin:2px;
-	padding-top:30px;
+	padding-top:40px;
 	text-align:center;
 }
 /*end for jquery grid folder/file */
